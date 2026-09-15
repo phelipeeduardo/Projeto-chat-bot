@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Inteligente com Gemini</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cloudflare.com">
+</head>
+<body>
+
+    <div class="chat-wrapper">
+        <div class="chat-header">
+            <div class="bot-info">
+                <div class="bot-avatar">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div>
+                    <h2>Assistente IA</h2>
+                    <span class="status-online">Online</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-box" id="chatBox">
+            <div class="message bot">
+                <div class="message-content">
+                    Olá! Sou o seu assistente virtual integrado ao Gemini. Como posso te ajudar hoje?
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="userInput" placeholder="Digite sua mensagem aqui..." autocomplete="off">
+            <button id="sendBtn" onclick="sendMessage()">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('userInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const messageText = input.value.trim();
+            
+            if (!messageText) return;
+
+            appendMessage(messageText, 'user');
+            input.value = '';
+
+            const typingId = appendTypingIndicator();
+
+            try {
+                const response = await fetch('http://localhost:3000/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: messageText })
+                });
+                
+                const data = await response.json();
+                
+                removeTypingIndicator(typingId);
+                appendMessage(data.reply, 'bot');
+            } catch (error) {
+                removeTypingIndicator(typingId);
+                appendMessage('Desculpe, estou com problemas para me conectar ao servidor.', 'bot');
+            }
+        }
+
+        function appendMessage(text, sender) {
+            const chatBox = document.getElementById('chatBox');
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message', sender);
+
+            const contentDiv = document.createElement('div');
+            contentDiv.classList.add('message-content');
+            contentDiv.innerText = text;
+
+            msgDiv.appendChild(contentDiv);
+            chatBox.appendChild(msgDiv);
+            
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function appendTypingIndicator() {
+            const chatBox = document.getElementById('chatBox');
+            const typingDiv = document.createElement('div');
+            const id = 'typing-' + Date.now();
+            
+            typingDiv.id = id;
+            typingDiv.classList.add('message', 'bot', 'typing');
+            typingDiv.innerHTML = `<div class="message-content"><span>.</span><span>.</span><span>.</span></div>`;
+            
+            chatBox.appendChild(typingDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return id;
+        }
+
+        function removeTypingIndicator(id) {
+            const indicator = document.getElementById(id);
+            if (indicator) indicator.remove();
+        }
+    </script>
+</body>
+</html>
