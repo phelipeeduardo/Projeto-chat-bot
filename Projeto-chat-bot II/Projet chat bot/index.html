@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Chatbot inteligente integrado à API Gemini">
+    <title>Chatbot Inteligente com Gemini</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="chat-wrapper">
+        <header class="chat-header">
+            <div class="bot-info">
+                <div class="bot-avatar">🤖</div>
+
+                <div class="bot-details">
+                    <h1>Assistente IA</h1>
+                    <span class="status-online">Online</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="chat-box" id="chatBox" aria-live="polite">
+            <div class="message bot">
+                <div class="message-content">
+                    Olá! Sou o seu assistente virtual integrado ao Gemini. Como posso te ajudar hoje?
+                </div>
+            </div>
+        </section>
+
+        <form class="chat-input-area" id="chatForm">
+            <input
+                type="text"
+                id="userInput"
+                placeholder="Digite sua mensagem aqui..."
+                autocomplete="off"
+                aria-label="Mensagem"
+            >
+
+            <button
+                id="sendBtn"
+                type="submit"
+                aria-label="Enviar mensagem"
+            >
+                ➤
+            </button>
+        </form>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
